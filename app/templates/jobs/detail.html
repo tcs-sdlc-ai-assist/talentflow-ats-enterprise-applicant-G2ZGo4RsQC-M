@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }} - Job Detail{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <div class="mb-6 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <a href="/jobs" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ job.title }}</h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            {% if user and user.role in ['Super Admin', 'Admin', 'Hiring Manager'] %}
+            <a href="/jobs/{{ job.id }}/edit" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Edit Job
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Job Details</h2>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                        {% if job.status == 'Draft' %}
+                            bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                        {% elif job.status == 'Published' %}
+                            bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                        {% elif job.status == 'Closed' %}
+                            bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                        {% else %}
+                            bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
+                        {% endif %}
+                    ">
+                        {{ job.status }}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Department</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ job.department or 'N/A' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Location</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ job.location or 'N/A' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Employment Type</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ job.employment_type or 'N/A' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Salary Range</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            {% if job.salary_min and job.salary_max %}
+                                ${{ "{:,.0f}".format(job.salary_min) }} - ${{ "{:,.0f}".format(job.salary_max) }}
+                            {% elif job.salary_min %}
+                                From ${{ "{:,.0f}".format(job.salary_min) }}
+                            {% elif job.salary_max %}
+                                Up to ${{ "{:,.0f}".format(job.salary_max) }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Experience Level</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ job.experience_level or 'N/A' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Created</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ job.created_at.strftime('%B %d, %Y') if job.created_at else 'N/A' }}</dd>
+                    </div>
+                </div>
+
+                {% if job.description %}
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Description</h3>
+                    <div class="prose prose-sm dark:prose-invert max-w-none text-gray-900 dark:text-gray-100">
+                        {{ job.description | replace('\n', '<br>') | safe }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if job.requirements %}
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Requirements</h3>
+                    <div class="prose prose-sm dark:prose-invert max-w-none text-gray-900 dark:text-gray-100">
+                        {{ job.requirements | replace('\n', '<br>') | safe }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Applications</h2>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                        {{ applications | length }} total
+                    </span>
+                </div>
+
+                {% if applications and applications | length > 0 %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Candidate</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Applied</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            {% for application in applications %}
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                                            <span class="text-xs font-medium text-indigo-600 dark:text-indigo-300">
+                                                {% if application.candidate %}
+                                                    {{ application.candidate.first_name[0] | upper }}{{ application.candidate.last_name[0] | upper }}
+                                                {% else %}
+                                                    ??
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                                {% if application.candidate %}
+                                                    {{ application.candidate.first_name }} {{ application.candidate.last_name }}
+                                                {% else %}
+                                                    Unknown Candidate
+                                                {% endif %}
+                                            </p>
+                                            {% if application.candidate and application.candidate.email %}
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ application.candidate.email }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                        {% if application.status == 'New' %}
+                                            bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                        {% elif application.status == 'Screening' %}
+                                            bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
+                                        {% elif application.status == 'Interview' %}
+                                            bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200
+                                        {% elif application.status == 'Offer' %}
+                                            bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                        {% elif application.status == 'Hired' %}
+                                            bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200
+                                        {% elif application.status == 'Rejected' %}
+                                            bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                        {% else %}
+                                            bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
+                                        {% endif %}
+                                    ">
+                                        {{ application.status }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                    {{ application.created_at.strftime('%b %d, %Y') if application.created_at else 'N/A' }}
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                    <a href="/applications/{{ application.id }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium transition-colors">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No applications yet</h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Applications will appear here once candidates apply for this job.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Hiring Manager</h2>
+                {% if job.hiring_manager %}
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                        <span class="text-sm font-medium text-indigo-600 dark:text-indigo-300">
+                            {{ job.hiring_manager.full_name[0] | upper if job.hiring_manager.full_name else '?' }}
+                        </span>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ job.hiring_manager.full_name or 'N/A' }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ job.hiring_manager.email or '' }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-sm text-gray-500 dark:text-gray-400">No hiring manager assigned</p>
+                {% endif %}
+            </div>
+
+            {% if user and user.role in ['Super Admin', 'Admin', 'Hiring Manager'] %}
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Status Transitions</h2>
+                <div class="space-y-3">
+                    {% if job.status == 'Draft' %}
+                    <form method="POST" action="/jobs/{{ job.id }}/status">
+                        <input type="hidden" name="status" value="Published">
+                        <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Publish Job
+                        </button>
+                    </form>
+                    {% elif job.status == 'Published' %}
+                    <form method="POST" action="/jobs/{{ job.id }}/status">
+                        <input type="hidden" name="status" value="Draft">
+                        <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Revert to Draft
+                        </button>
+                    </form>
+                    <form method="POST" action="/jobs/{{ job.id }}/status">
+                        <input type="hidden" name="status" value="Closed">
+                        <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                            </svg>
+                            Close Job
+                        </button>
+                    </form>
+                    {% elif job.status == 'Closed' %}
+                    <form method="POST" action="/jobs/{{ job.id }}/status">
+                        <input type="hidden" name="status" value="Published">
+                        <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            Reopen Job
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Summary</h2>
+                <dl class="space-y-3">
+                    <div class="flex justify-between">
+                        <dt class="text-sm text-gray-500 dark:text-gray-400">Total Applications</dt>
+                        <dd class="text-sm font-medium text-gray-900 dark:text-white">{{ applications | length }}</dd>
+                    </div>
+                    {% set new_count = applications | selectattr('status', 'equalto', 'New') | list | length %}
+                    {% set screening_count = applications | selectattr('status', 'equalto', 'Screening') | list | length %}
+                    {% set interview_count = applications | selectattr('status', 'equalto', 'Interview') | list | length %}
+                    {% set offer_count = applications | selectattr('status', 'equalto', 'Offer') | list | length %}
+                    {% set hired_count = applications | selectattr('status', 'equalto', 'Hired') | list | length %}
+                    {% set rejected_count = applications | selectattr('status', 'equalto', 'Rejected') | list | length %}
+                    {% if new_count > 0 %}
+                    <div class="flex justify-between">
+                        <dt class="text-sm text-gray-500 dark:text-gray-400">New</dt>
+                        <dd class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ new_count }}</dd>
+                    </div>
+                    {% endif %}
+                    {% if screening_count > 0 %}
+                    <div class="flex justify-between">
+                        <dt class="text-sm text-gray-500 dark:text-gray-400">Screening</dt>
+                        <dd class="text-sm font-medium text-purple-600 dark:text-purple-400">{{ screening_count }}</dd>
+                    </div>
+                    {% endif %}
+                    {% if interview_count > 0 %}
+                    <div class="flex justify-between">
+                        <dt class="text-sm text-gray-500 dark:text-gray-400">Interview</dt>
+                        <dd class="text-sm font-medium text-indigo-600 dark:text-indigo-400">{{ interview_count }}</dd>
+                    </div>
+                    {% endif %}
+                    {% if offer_count > 0 %}
+                    <div class="flex justify-between">
+                        <dt class="text-sm text-gray-500 dark:text-gray-400">Offer</dt>
+                        <dd class="text-sm font-medium text-green-600 dark:text-green-400">{{ offer_count }}</dd>
+                    </div>
+                    {% endif %}
+                    {% if hired_count > 0 %}
+                    <div class="flex justify-between">
+                        <dt class="text-sm text-gray-500 dark:text-gray-400">Hired</dt>
+                        <dd class="text-sm font-medium text-emerald-600 dark:text-emerald-400">{{ hired_count }}</dd>
+                    </div>
+                    {% endif %}
+                    {% if rejected_count > 0 %}
+                    <div class="flex justify-between">
+                        <dt class="text-sm text-gray-500 dark:text-gray-400">Rejected</dt>
+                        <dd class="text-sm font-medium text-red-600 dark:text-red-400">{{ rejected_count }}</dd>
+                    </div>
+                    {% endif %}
+                </dl>
+            </div>
+
+            {% if job.updated_at %}
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Last Updated</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ job.updated_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

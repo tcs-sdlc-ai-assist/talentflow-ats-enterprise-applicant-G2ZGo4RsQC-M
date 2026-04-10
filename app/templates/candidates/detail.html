@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}{{ candidate.first_name }} {{ candidate.last_name }} - Candidate Detail{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-6 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <a href="/candidates" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ candidate.first_name }} {{ candidate.last_name }}</h1>
+            {% if candidate.status %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                {% if candidate.status == 'Active' %}
+                    bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                {% elif candidate.status == 'Hired' %}
+                    bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                {% elif candidate.status == 'Rejected' %}
+                    bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                {% elif candidate.status == 'Withdrawn' %}
+                    bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                {% else %}
+                    bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
+                {% endif %}
+            ">
+                {{ candidate.status }}
+            </span>
+            {% endif %}
+        </div>
+        {% if user and user.role in ['Super Admin', 'Admin', 'Hiring Manager', 'Recruiter'] %}
+        <a href="/candidates/{{ candidate.id }}/edit" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+            Edit Candidate
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Contact Information</h2>
+                </div>
+                <div class="px-6 py-4">
+                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                {% if candidate.email %}
+                                <a href="mailto:{{ candidate.email }}" class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">{{ candidate.email }}</a>
+                                {% else %}
+                                <span class="text-gray-400 dark:text-gray-500">Not provided</span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                {% if candidate.phone %}
+                                <a href="tel:{{ candidate.phone }}" class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">{{ candidate.phone }}</a>
+                                {% else %}
+                                <span class="text-gray-400 dark:text-gray-500">Not provided</span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Location</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                {% if candidate.location %}
+                                {{ candidate.location }}
+                                {% else %}
+                                <span class="text-gray-400 dark:text-gray-500">Not provided</span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Source</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                {% if candidate.source %}
+                                {{ candidate.source }}
+                                {% else %}
+                                <span class="text-gray-400 dark:text-gray-500">Not specified</span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Skills</h2>
+                </div>
+                <div class="px-6 py-4">
+                    {% if candidate.skills and candidate.skills|length > 0 %}
+                    <div class="flex flex-wrap gap-2">
+                        {% for skill in candidate.skills %}
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+                            {{ skill.name if skill.name is defined else skill }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-gray-400 dark:text-gray-500">No skills listed.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Resume</h2>
+                </div>
+                <div class="px-6 py-4">
+                    {% if candidate.resume_text %}
+                    <div class="prose prose-sm dark:prose-invert max-w-none">
+                        <pre class="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-sans leading-relaxed bg-gray-50 dark:bg-gray-900 rounded-lg p-4 overflow-auto max-h-96">{{ candidate.resume_text }}</pre>
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-gray-400 dark:text-gray-500">No resume text available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if candidate.notes %}
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Notes</h2>
+                </div>
+                <div class="px-6 py-4">
+                    <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ candidate.notes }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Details</h2>
+                </div>
+                <div class="px-6 py-4 space-y-4">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Experience</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            {% if candidate.experience_years is not none %}
+                            {{ candidate.experience_years }} year{{ 's' if candidate.experience_years != 1 else '' }}
+                            {% else %}
+                            <span class="text-gray-400 dark:text-gray-500">Not specified</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Current Company</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            {% if candidate.current_company %}
+                            {{ candidate.current_company }}
+                            {% else %}
+                            <span class="text-gray-400 dark:text-gray-500">Not specified</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Current Title</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            {% if candidate.current_title %}
+                            {{ candidate.current_title }}
+                            {% else %}
+                            <span class="text-gray-400 dark:text-gray-500">Not specified</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Created</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            {{ candidate.created_at.strftime('%b %d, %Y') if candidate.created_at else 'N/A' }}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Last Updated</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                            {{ candidate.updated_at.strftime('%b %d, %Y') if candidate.updated_at else 'N/A' }}
+                        </dd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Applications</h2>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                        {{ applications|length if applications else 0 }}
+                    </span>
+                </div>
+                <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                    {% if applications and applications|length > 0 %}
+                        {% for application in applications %}
+                        <a href="/applications/{{ application.id }}" class="block px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">
+                                        {{ application.job.title if application.job else 'Unknown Position' }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        Applied {{ application.applied_at.strftime('%b %d, %Y') if application.applied_at else application.created_at.strftime('%b %d, %Y') if application.created_at else 'N/A' }}
+                                    </p>
+                                </div>
+                                <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if application.status == 'New' or application.status == 'Applied' %}
+                                        bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                    {% elif application.status == 'Screening' or application.status == 'Under Review' %}
+                                        bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                    {% elif application.status == 'Interview' or application.status == 'Interviewing' %}
+                                        bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
+                                    {% elif application.status == 'Offered' or application.status == 'Offer' %}
+                                        bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                    {% elif application.status == 'Hired' %}
+                                        bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200
+                                    {% elif application.status == 'Rejected' %}
+                                        bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                    {% elif application.status == 'Withdrawn' %}
+                                        bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
+                                    {% else %}
+                                        bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
+                                    {% endif %}
+                                ">
+                                    {{ application.status }}
+                                </span>
+                            </div>
+                            {% if application.stage %}
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Stage: {{ application.stage }}</p>
+                            {% endif %}
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                    <div class="px-6 py-8 text-center">
+                        <svg class="mx-auto h-10 w-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">No applications yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

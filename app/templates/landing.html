@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}TalentFlow ATS - Applicant Tracking System{% endblock %}
+
+{% block content %}
+<div class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 opacity-90"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzEuNjU3IDAgMy0xLjM0MyAzLTNzLTEuMzQzLTMtMy0zLTMgMS4zNDMtMyAzIDEuMzQzIDMgMyAzem0wIDM2YzEuNjU3IDAgMy0xLjM0MyAzLTNzLTEuMzQzLTMtMy0zLTMgMS4zNDMtMyAzIDEuMzQzIDMgMyAzem0tMTgtMThjMS42NTcgMCAzLTEuMzQzIDMtM3MtMS4zNDMtMy0zLTMtMyAxLjM0My0zIDMgMS4zNDMgMyAzIDN6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
+        <div class="text-center">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight">
+                <span class="block">Welcome to</span>
+                <span class="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 to-yellow-400">TalentFlow ATS</span>
+            </h1>
+            <p class="mt-6 max-w-2xl mx-auto text-xl sm:text-2xl text-indigo-100 leading-relaxed">
+                Streamline your hiring process with our modern applicant tracking system. Find, evaluate, and hire the best talent efficiently.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                {% if user %}
+                <a href="/dashboard"
+                   class="inline-flex items-center px-8 py-4 border border-transparent text-lg font-semibold rounded-xl text-indigo-700 bg-white hover:bg-indigo-50 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Go to Dashboard
+                </a>
+                {% else %}
+                <a href="/auth/login"
+                   class="inline-flex items-center px-8 py-4 border border-transparent text-lg font-semibold rounded-xl text-indigo-700 bg-white hover:bg-indigo-50 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                    </svg>
+                    Employee Portal Login
+                </a>
+                {% endif %}
+                <a href="#openings"
+                   class="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-semibold rounded-xl text-white hover:bg-white hover:text-indigo-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Current Openings
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+            <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
+        </svg>
+    </div>
+</div>
+
+<div class="bg-white py-12 sm:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div class="p-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Candidate Management</h3>
+                <p class="mt-2 text-gray-500">Track and manage candidates through every stage of the hiring pipeline.</p>
+            </div>
+            <div class="p-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 text-purple-600 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Interview Scheduling</h3>
+                <p class="mt-2 text-gray-500">Seamlessly schedule and coordinate interviews with your hiring team.</p>
+            </div>
+            <div class="p-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-pink-100 text-pink-600 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Analytics & Reports</h3>
+                <p class="mt-2 text-gray-500">Gain insights into your hiring process with detailed analytics and reporting.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="openings" class="bg-gray-50 py-16 sm:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Current Openings</h2>
+            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                Explore our open positions and find the perfect opportunity for your career.
+            </p>
+        </div>
+
+        {% if jobs and jobs|length > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for job in jobs %}
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-indigo-200 transition-all duration-200 overflow-hidden flex flex-col">
+                <div class="p-6 flex-1">
+                    <div class="flex items-start justify-between mb-3">
+                        <h3 class="text-lg font-semibold text-gray-900 leading-tight">{{ job.title }}</h3>
+                    </div>
+
+                    {% if job.department %}
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <svg class="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                        <span>{{ job.department }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if job.location %}
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <svg class="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <span>{{ job.location }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if job.employment_type %}
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <svg class="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>{{ job.employment_type }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if job.description %}
+                    <p class="text-sm text-gray-600 line-clamp-3">{{ job.description|truncate(150, True, '...') }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+                    <div class="flex items-center justify-between">
+                        {% if job.created_at %}
+                        <span class="text-xs text-gray-400">Posted {{ job.created_at.strftime('%b %d, %Y') if job.created_at else '' }}</span>
+                        {% else %}
+                        <span></span>
+                        {% endif %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Open
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-16">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-6">
+                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No Open Positions</h3>
+            <p class="text-gray-500 max-w-md mx-auto">There are no open positions at the moment. Please check back later for new opportunities.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="bg-gradient-to-r from-indigo-600 to-purple-600 py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-white mb-4">Ready to Join Our Team?</h2>
+        <p class="text-lg text-indigo-100 mb-8">Take the next step in your career. Browse our open positions and apply today.</p>
+        <a href="#openings"
+           class="inline-flex items-center px-8 py-3 border-2 border-white text-lg font-semibold rounded-xl text-white hover:bg-white hover:text-indigo-700 transition-all duration-200">
+            View Openings
+        </a>
+    </div>
+</div>
+
+<footer class="bg-gray-900 text-gray-400 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center mb-4 md:mb-0">
+                <svg class="w-8 h-8 text-indigo-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                <span class="text-white font-semibold text-lg">TalentFlow ATS</span>
+            </div>
+            <p class="text-sm">&copy; {{ now().year if now is defined else "2024" }} TalentFlow ATS. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}
